@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14213D">
+<title>Benjamin · Climb to 8th grade math</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🚩</text></svg>">
+<style>
+  :root {
+    --ink: #14213D;
+    --ink-soft: #4A5875;
+    --paper: #EEF3F8;
+    --card: #FFFFFF;
+    --flag: #FF4D3D;
+    --blue: #2563EB;
+    --violet: #7C5CFF;
+    --gold: #FFB020;
+    --moss: #17A673;
+    --shadow: 5px 5px 0 var(--ink);
+    --shadow-sm: 3px 3px 0 var(--ink);
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--sans); color: var(--ink); background: var(--paper);
+    padding: 16px 14px 40px; max-width: 780px; margin: 0 auto; line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--flag); outline-offset: 2px;
+  }
+
+  .mast {
+    background: var(--ink); color: #fff; border: 3px solid var(--ink); border-radius: 14px;
+    padding: 14px 16px; box-shadow: var(--shadow); margin-bottom: 14px;
+  }
+  .mast-eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #8FA6D6; }
+  .mast-title { font-size: clamp(22px, 6vw, 30px); font-weight: 900; letter-spacing: -.02em; line-height: 1.05; margin: 4px 0 10px; }
+  .mast-title em { font-style: normal; color: var(--gold); }
+  .readouts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .readout { background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.2); border-radius: 9px; padding: 6px 10px; flex: 1 1 90px; }
+  .readout-n { font-family: var(--mono); font-size: 19px; font-weight: 700; letter-spacing: -.03em; }
+  .readout-l { font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #8FA6D6; }
+
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-bottom: 14px; }
+  .tab { background: var(--card); border: 3px solid var(--ink); border-radius: 11px; padding: 9px 2px 7px;
+         box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; gap: 2px;
+         transition: transform .08s, box-shadow .08s; }
+  .tab:active { transform: translate(3px,3px); box-shadow: none; }
+  .tab-i { font-size: 19px; line-height: 1; }
+  .tab-t { font-size: 10px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+  .tab[aria-selected="true"] { background: var(--gold); }
+
+  .card { background: var(--card); border: 3px solid var(--ink); border-radius: 13px; padding: 14px;
+          box-shadow: var(--shadow); margin-bottom: 14px; }
+  .card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .card-head h2 { font-size: 14px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; margin: 0; flex: 1; }
+  .hint { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 12px; }
+
+  .say { background: var(--paper); border: 2px solid var(--ink); border-radius: 8px; width: 30px; height: 30px;
+         font-size: 14px; flex: none; display: grid; place-items: center; padding: 0; }
+  .say:active, .say.playing { background: var(--gold); }
+
+  /* ---- today grid: math only ---- */
+  .hour-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .hour-lab { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--ink-soft); width: 26px; flex: none; text-align: right; }
+  .blocks { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; flex: 1; }
+  .blk { aspect-ratio: 1.5 / 1; border: 3px solid var(--ink); border-radius: 8px; background: var(--card);
+         padding: 0; position: relative; transition: transform .07s; }
+  .blk:active { transform: scale(.93); }
+  .blk[data-on="1"] { background: var(--blue); }
+  .blk::after { content: "15"; position: absolute; inset: 0; display: grid; place-items: center;
+                font-family: var(--mono); font-size: 10px; font-weight: 700; color: #C3CEDE; }
+  .blk[data-on="1"]::after { content: "\2713"; color: #fff; font-size: 15px; }
+
+  .today-total { display: flex; align-items: baseline; gap: 8px; margin: 14px 0 0;
+                 border-top: 3px dashed #C3CEDE; padding-top: 14px; }
+  .big-n { font-family: var(--mono); font-size: 36px; font-weight: 800; letter-spacing: -.04em; line-height: 1; }
+  .of-n { font-family: var(--mono); font-size: 14px; color: var(--ink-soft); font-weight: 700; }
+  .badge { margin-left: auto; border: 3px solid var(--ink); border-radius: 999px; padding: 5px 12px;
+           font-size: 12px; font-weight: 900; background: var(--paper); }
+
+  /* ---- ladder ---- */
+  .ladder { display: flex; flex-direction: column-reverse; margin: 4px 0 6px; }
+  .rung { display: flex; align-items: stretch; gap: 10px; padding: 7px 0; position: relative; }
+  .rung-rail { width: 34px; flex: none; display: grid; place-items: center; position: relative; }
+  .rung-rail::before { content: ""; position: absolute; top: -8px; bottom: -8px; width: 6px;
+    background: repeating-linear-gradient(180deg, var(--ink) 0 6px, transparent 6px 12px); }
+  .rung:first-child .rung-rail::before { top: 50%; }
+  .rung:last-child .rung-rail::before { bottom: 50%; }
+  .rung-dot { width: 26px; height: 26px; border: 3px solid var(--ink); border-radius: 50%; background: var(--card);
+              z-index: 1; display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 800; }
+  .rung.done .rung-dot { background: var(--moss); color: #fff; }
+  .rung.now .rung-dot { background: var(--flag); color: #fff; }
+  .rung-plate { flex: 1; border: 3px solid var(--ink); border-radius: 11px; background: var(--card);
+                padding: 9px 11px; display: flex; align-items: center; gap: 10px; box-shadow: var(--shadow-sm); }
+  .rung.done .rung-plate { background: #DFF6EC; }
+  .rung.now .rung-plate { background: #FFF0D6; }
+  .rung-name { font-size: 15px; font-weight: 900; letter-spacing: -.01em; }
+  .rung-meta { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); font-weight: 700; }
+  .rung-btn { margin-left: auto; border: 3px solid var(--ink); border-radius: 9px; background: var(--card);
+              padding: 7px 11px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; flex: none; }
+  .rung.done .rung-btn { background: var(--moss); color: #fff; }
+
+  .pace { background: var(--ink); color: #fff; }
+  .pace .card-head h2 { color: #fff; }
+  .pace-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 11px; }
+  .pace-cell { background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.2); border-radius: 9px; padding: 8px 10px; }
+  .pace-n { font-family: var(--mono); font-size: 20px; font-weight: 800; letter-spacing: -.03em; }
+  .pace-l { font-size: 9px; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; color: #8FA6D6; }
+  .verdict { border: 2px solid rgba(255,255,255,.3); border-radius: 10px; padding: 10px 12px; font-size: 13px; line-height: 1.5; }
+  .verdict b { color: var(--gold); }
+  .verdict.behind { border-color: var(--flag); background: rgba(255,77,61,.14); }
+  .verdict.ahead { border-color: var(--moss); background: rgba(23,166,115,.16); }
+
+  .sessions { display: flex; flex-direction: column; gap: 7px; }
+  .sess { display: flex; align-items: center; gap: 9px; border: 3px solid var(--ink); border-radius: 10px;
+          padding: 8px 11px; background: var(--card); }
+  .sess.past { opacity: .5; }
+  .sess.current { background: #FFF0D6; box-shadow: var(--shadow-sm); }
+  .sess-n { font-family: var(--mono); font-weight: 800; font-size: 12px; background: var(--ink); color: #fff;
+            border-radius: 6px; padding: 3px 7px; flex: none; }
+  .sess-d { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); font-weight: 700; }
+  .sess-tag { margin-left: auto; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; }
+
+  select {
+    width: 100%; border: 3px solid var(--ink); border-radius: 10px; padding: 10px;
+    font-family: var(--sans); font-size: 15px; background: var(--card); color: var(--ink);
+  }
+  textarea, input[type="text"], input[type="date"], input[type="number"] {
+    width: 100%; border: 3px solid var(--ink); border-radius: 10px; padding: 10px;
+    font-family: var(--sans); font-size: 15px; background: var(--card); color: var(--ink);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  .btn { border: 3px solid var(--ink); border-radius: 10px; background: var(--card); padding: 10px 13px;
+         font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em;
+         box-shadow: var(--shadow-sm); transition: transform .08s, box-shadow .08s; }
+  .btn:active { transform: translate(3px,3px); box-shadow: none; }
+  .btn.primary { background: var(--flag); color: #fff; }
+  .btn.go { background: var(--moss); color: #fff; }
+  .btn-row { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+
+  .stage { border: 3px solid var(--ink); border-radius: 11px; background: var(--paper); padding: 13px;
+           margin-top: 11px; font-size: 18px; line-height: 1.75; min-height: 60px; }
+  mark { padding: 1px 4px; border-radius: 5px; font-weight: 800; }
+  mark.num { background: var(--gold); }
+  mark.add { background: #BFE3D3; box-shadow: inset 0 -3px 0 var(--moss); }
+  mark.sub { background: #FFD4D0; box-shadow: inset 0 -3px 0 var(--flag); }
+  mark.mul { background: #D3DEFF; box-shadow: inset 0 -3px 0 var(--blue); }
+  mark.div { background: #E2DAFF; box-shadow: inset 0 -3px 0 var(--violet); }
+  .legend { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 9px; }
+  .lg { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+        padding: 3px 8px; border-radius: 999px; border: 2px solid var(--ink); }
+
+  .steps { display: flex; flex-direction: column; gap: 7px; }
+  .step { display: flex; align-items: center; gap: 10px; border: 3px solid var(--ink); border-radius: 11px;
+          padding: 10px 11px; background: var(--card); text-align: left; box-shadow: var(--shadow-sm); width: 100%; }
+  .step[aria-pressed="true"] { background: #DFF6EC; }
+  .step-i { font-size: 22px; flex: none; }
+  .step-t { font-size: 14px; font-weight: 800; }
+  .step-s { font-size: 11.5px; color: var(--ink-soft); }
+  .step-c { margin-left: auto; width: 26px; height: 26px; border: 3px solid var(--ink); border-radius: 7px;
+            display: grid; place-items: center; font-size: 14px; flex: none; }
+  .step[aria-pressed="true"] .step-c { background: var(--moss); color: #fff; }
+
+  .wordbank { display: flex; flex-direction: column; gap: 8px; }
+  .wb-group { border: 3px solid var(--ink); border-radius: 11px; overflow: hidden; }
+  .wb-head { padding: 7px 11px; font-size: 12px; font-weight: 900; text-transform: uppercase;
+             letter-spacing: .06em; color: #fff; }
+  .wb-body { padding: 9px 11px; background: var(--card); }
+  .wb-mean { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 8px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 2px solid var(--ink); border-radius: 999px; background: var(--paper); padding: 5px 11px;
+          font-size: 13px; font-weight: 700; }
+  .chip:active, .chip.playing { background: var(--gold); }
+
+  .counter { display: flex; align-items: center; gap: 10px; }
+  .cbtn { width: 46px; height: 46px; border: 3px solid var(--ink); border-radius: 11px; background: var(--card);
+          font-size: 22px; font-weight: 900; box-shadow: var(--shadow-sm); display: grid; place-items: center; padding: 0; }
+  .cbtn:active { transform: translate(3px,3px); box-shadow: none; }
+  .cval { font-family: var(--mono); font-size: 30px; font-weight: 800; min-width: 46px; text-align: center; }
+  .split-l { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { border: 2px solid var(--ink); padding: 5px 7px; text-align: left; }
+  th { background: var(--ink); color: #fff; font-size: 9.5px; text-transform: uppercase; letter-spacing: .08em; }
+  td.n { font-family: var(--mono); font-weight: 700; }
+  .tbl-wrap { overflow-x: auto; border-radius: 9px; }
+  .field { margin-bottom: 10px; }
+  .field label { display: block; font-size: 10px; font-weight: 900; text-transform: uppercase;
+                 letter-spacing: .09em; color: var(--ink-soft); margin-bottom: 4px; }
+  .sess-edit { display: grid; grid-template-columns: 46px 1fr 1fr; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .sess-edit input { padding: 6px; font-size: 12px; font-family: var(--mono); }
+  .note-line { font-size: 12px; color: var(--ink-soft); margin-top: 9px; line-height: 1.55; }
+  .status { margin-top: 11px; border: 3px solid var(--ink); border-radius: 10px; padding: 9px 11px;
+            font-size: 12.5px; line-height: 1.5; background: var(--paper); }
+  .status.ok { background: #DFF6EC; border-color: var(--moss); }
+  .status.bad { background: #FFE4E1; border-color: var(--flag); }
+
+  .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--ink);
+           color: #fff; border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 700; z-index: 50;
+           box-shadow: 0 6px 20px rgba(20,33,61,.35); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .toast.show { opacity: 1; }
+  .hidden { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 420px) { .tab-t { font-size: 8.5px; } .hour-lab { width: 20px; font-size: 9px; } }
+</style>
+</head>
+<body>
+
+<div class="mast">
+  <div class="mast-eyebrow">Benjamin · 2nd grade · Alpha East Bay</div>
+  <div class="mast-title">Climb to <em>8th grade math</em></div>
+  <div class="readouts">
+    <div class="readout"><div class="readout-n" id="r-level">2</div><div class="readout-l">Grade now</div></div>
+    <div class="readout"><div class="readout-n" id="r-days">—</div><div class="readout-l">Days left</div></div>
+    <div class="readout"><div class="readout-n" id="r-hours">—</div><div class="readout-l">Hours logged</div></div>
+    <div class="readout"><div class="readout-n" id="r-streak">—</div><div class="readout-l">Day streak</div></div>
+  </div>
+</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" data-tab="today" aria-selected="true"><span class="tab-i">⛰️</span><span class="tab-t">Today</span></button>
+  <button class="tab" role="tab" data-tab="climb" aria-selected="false"><span class="tab-i">🚩</span><span class="tab-t">Climb</span></button>
+  <button class="tab" role="tab" data-tab="words" aria-selected="false"><span class="tab-i">📖</span><span class="tab-t">Words</span></button>
+  <button class="tab" role="tab" data-tab="guide" aria-selected="false"><span class="tab-i">📋</span><span class="tab-t">Guide</span></button>
+</div>
+
+<section id="panel-today">
+  <div class="card">
+    <div class="card-head">
+      <h2 id="today-date">Today</h2>
+      <button class="say" data-clip="ui-today-help">🔊</button>
+    </div>
+    <p class="hint">Tap one block for every <b>15 minutes of math</b> you finish on TimeBack.</p>
+    <div id="grid"></div>
+    <div class="today-total">
+      <span class="big-n" id="t-total">0h 00m</span>
+      <span class="of-n" id="t-target">of 4h 00m</span>
+      <span class="badge" id="t-badge">Not started</span>
+    </div>
+  </div>
+</section>
+
+<section id="panel-climb" class="hidden">
+  <div class="card pace">
+    <div class="card-head"><h2>Pace check</h2></div>
+    <div class="pace-grid">
+      <div class="pace-cell"><div class="pace-n" id="p-done">0 / 6</div><div class="pace-l">Levels passed</div></div>
+      <div class="pace-cell"><div class="pace-n" id="p-sess">5</div><div class="pace-l">Sessions left</div></div>
+      <div class="pace-cell"><div class="pace-n" id="p-need">—</div><div class="pace-l">Needed per session</div></div>
+      <div class="pace-cell"><div class="pace-n" id="p-due">—</div><div class="pace-l">Next test due by</div></div>
+    </div>
+    <div class="verdict" id="verdict">Loading…</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>The ladder</h2>
+      <button class="say" data-clip="ui-climb-help">🔊</button>
+    </div>
+    <p class="hint">Tap <b>Mark passed</b> the day he clears a level test.</p>
+    <div class="ladder" id="ladder"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Sessions</h2></div>
+    <div class="sessions" id="sessions"></div>
+  </div>
+</section>
+
+<section id="panel-words" class="hidden">
+  <div class="card">
+    <div class="card-head">
+      <h2>Problem reader</h2>
+      <button class="say" data-clip="ui-reader-help">🔊</button>
+    </div>
+    <p class="hint">Type the problem in. It gets read out loud, and the words that tell you what to do get colored.</p>
+    <textarea id="wp-input" placeholder="Maya had 24 stickers. She gave 6 stickers to each of her 3 friends. How many stickers does she have left?"></textarea>
+    <div class="btn-row">
+      <button class="btn primary" id="wp-read">🔊 Read it all</button>
+      <button class="btn" id="wp-chunk">➡️ One piece at a time</button>
+      <button class="btn" id="wp-slow">🐢 Read it slow</button>
+    </div>
+    <div class="stage" id="wp-stage">Your problem shows up here.</div>
+    <div class="legend">
+      <span class="lg" style="background:var(--gold);">Numbers</span>
+      <span class="lg" style="background:#BFE3D3;">Put together +</span>
+      <span class="lg" style="background:#FFD4D0;">Take away −</span>
+      <span class="lg" style="background:#D3DEFF;">Groups of ×</span>
+      <span class="lg" style="background:#E2DAFF;">Split up ÷</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Five moves</h2>
+      <button class="say" data-clip="ui-moves-help">🔊</button>
+    </div>
+    <p class="hint">Same five moves, every problem. Tap each one as he does it.</p>
+    <div class="steps" id="steps"></div>
+    <div class="btn-row"><button class="btn" id="steps-reset">↺ Start over</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Words that tell you what to do</h2>
+      <button class="say" data-clip="ui-bank-help">🔊</button>
+    </div>
+    <p class="hint">Tap a word to hear it.</p>
+    <div class="wordbank" id="wordbank"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Today's count</h2>
+      <button class="say" data-clip="ui-count-help">🔊</button>
+    </div>
+    <p class="hint">Do <b>5 a day</b> and they stop being hard.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div>
+        <div class="split-l" style="margin-bottom:6px;">Tried</div>
+        <div class="counter">
+          <button class="cbtn" data-wp="tried" data-d="-1">−</button>
+          <span class="cval" id="wp-tried">0</span>
+          <button class="cbtn" data-wp="tried" data-d="1">+</button>
+        </div>
+      </div>
+      <div>
+        <div class="split-l" style="margin-bottom:6px;">Got it right</div>
+        <div class="counter">
+          <button class="cbtn" data-wp="right" data-d="-1">−</button>
+          <span class="cval" id="wp-right">0</span>
+          <button class="cbtn" data-wp="right" data-d="1">+</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="panel-guide" class="hidden">
+  <div class="card">
+    <div class="card-head"><h2>Last 14 school days</h2></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Math time</th><th>Word problems</th></tr></thead>
+        <tbody id="log-body"></tbody>
+      </table>
+    </div>
+    <div class="note-line" id="rollup"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h2>Settings</h2></div>
+    <div class="field">
+      <label for="set-daily">Daily math target (minutes)</label>
+      <input type="number" id="set-daily" min="15" max="480" step="15">
+    </div>
+    <div class="field">
+      <label for="set-end">Goal date</label>
+      <input type="date" id="set-end">
+    </div>
+    <div class="field">
+      <label for="set-voice">Backup voice (used only if neural clips are missing)</label>
+      <select id="set-voice"></select>
+      <button class="btn" id="test-voice" style="margin-top:8px">🔊 Hear this voice</button>
+    </div>
+    <div class="field">
+      <label>Session windows</label>
+      <div id="sess-edit"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn go" id="save-settings">Save settings</button>
+      <button class="btn" id="export">Copy all data</button>
+      <button class="btn" id="wipe">Erase everything</button>
+    </div>
+    <div class="status" id="save-status">Checking storage…</div>
+    <div class="status" id="voice-status">Checking voice…</div>
+    <div class="note-line">
+      <b>Copy all data</b> puts a CSV on your clipboard — that is the real backup. Nothing syncs between devices,
+      so pick one device and make it his.
+    </div>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script src="voice-lines.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ================= storage: three layers ================= */
+  var mem = {};
+  var HAS_WS = !!(window.storage && typeof window.storage.get === "function");
+  var HAS_LS = (function () {
+    try { localStorage.setItem("__bmc", "1"); localStorage.removeItem("__bmc"); return true; }
+    catch (e) { return false; }
+  })();
+  var BACKEND = HAS_WS ? "claude" : (HAS_LS ? "local" : "memory");
+  var lastSaved = null;
+
+  var store = {
+    get: function (k) {
+      if (BACKEND === "claude") { return window.storage.get(k).catch(function () { return null; }); }
+      if (BACKEND === "local") { var v = localStorage.getItem(k); return Promise.resolve(v === null ? null : { key: k, value: v }); }
+      return Promise.resolve(k in mem ? { key: k, value: mem[k] } : null);
+    },
+    set: function (k, v) {
+      if (BACKEND === "claude") { return window.storage.set(k, v).catch(function () { return null; }); }
+      if (BACKEND === "local") { try { localStorage.setItem(k, v); } catch (e) {} return Promise.resolve({ key: k, value: v }); }
+      mem[k] = v; return Promise.resolve({ key: k, value: v });
+    }
+  };
+  var K_LOG = "benji-math:log", K_GOAL = "benji-math:goal";
+
+  /* ================= voice: recordings -> neural -> device =================
+     Layer 1: audio/<clip-id>.mp3  — neural clips pre-generated by npm run voices
+     Layer 2: POST /api/speak                 — neural TTS, for text nobody recorded
+     Layer 3: speechSynthesis                 — the robot, last resort
+  ========================================================================= */
+  var EXTS = ["mp3", "webm", "m4a", "wav"];
+  var clipCache = {};      // id -> resolved url
+  var clipMissing = {};    // id -> true
+  var neuralCache = {};    // text -> object url
+  var NEURAL_OK = null;    // null = untested
+  var current = null;
+  var voiceMode = "device";
+
+  function stopAudio() {
+    if (current) { try { current.pause(); } catch (e) {} current = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    document.querySelectorAll(".playing").forEach(function (e) { e.classList.remove("playing"); });
+  }
+
+  function tryFile(url) {
+    return new Promise(function (res) {
+      var a = new Audio();
+      a.preload = "auto";
+      var done = false;
+      a.addEventListener("canplaythrough", function () { if (!done) { done = true; res(a); } });
+      a.addEventListener("error", function () { if (!done) { done = true; res(null); } });
+      setTimeout(function () { if (!done) { done = true; res(null); } }, 4000);
+      a.src = url;
+    });
+  }
+
+  function playClip(id) {
+    if (!id || clipMissing[id]) return Promise.resolve(false);
+    if (clipCache[id]) { return playUrl(clipCache[id]).then(function () { return true; }); }
+    var i = 0;
+    function next() {
+      if (i >= EXTS.length) { clipMissing[id] = true; return Promise.resolve(false); }
+      var url = "audio/" + id + "." + EXTS[i++];
+      return tryFile(url).then(function (a) {
+        if (!a) return next();
+        clipCache[id] = url;
+        voiceMode = "recorded";
+        current = a; a.play();
+        return true;
+      });
+    }
+    return next();
+  }
+
+  function playUrl(url) {
+    return new Promise(function (res) {
+      var a = new Audio(url);
+      current = a;
+      a.addEventListener("ended", res);
+      a.addEventListener("error", res);
+      a.play().catch(res);
+    });
+  }
+
+  function tryNeural(text, rate) {
+    if (NEURAL_OK === false) return Promise.resolve(false);
+    if (neuralCache[text]) { voiceMode = "neural"; return playUrl(neuralCache[text]).then(function () { return true; }); }
+    return fetch("/api/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text, speed: rate || 0.9 })
+    }).then(function (r) {
+      if (!r.ok) { NEURAL_OK = false; return false; }
+      return r.blob().then(function (b) {
+        NEURAL_OK = true; voiceMode = "neural";
+        var url = URL.createObjectURL(b);
+        neuralCache[text] = url;
+        return playUrl(url).then(function () { return true; });
+      });
+    }).catch(function () { NEURAL_OK = false; return false; });
+  }
+
+  /* ---- device voices: most machines ship at least one good one.
+     The default is usually the worst one, so rank and pick deliberately. ---- */
+  var voices = [];
+  var GOOD = [
+    /natural/i, /neural/i, /premium/i, /enhanced/i,
+    /\bava\b/i, /\bsamantha\b/i, /\ballison\b/i, /\bserena\b/i, /\bzoe\b/i,
+    /\baria\b/i, /\bjenny\b/i, /\bmichelle\b/i, /\bemma\b/i, /\bnatasha\b/i,
+    /google (us|uk) english/i
+  ];
+  var BAD = [/compact/i, /espeak/i, /albert/i, /bad news/i, /bells/i, /bubbles/i,
+             /cellos/i, /jester/i, /organ/i, /trinoids/i, /whisper/i, /wobble/i, /zarvox/i];
+
+  function scoreVoice(v) {
+    if (!/^en/i.test(v.lang)) return -1;
+    var s = 0, i;
+    for (i = 0; i < BAD.length; i++) if (BAD[i].test(v.name)) return -1;
+    for (i = 0; i < GOOD.length; i++) if (GOOD[i].test(v.name)) { s += 100 - i * 3; break; }
+    if (!v.localService) s += 25;          // network voices are usually the better ones
+    if (/en[-_]US/i.test(v.lang)) s += 10;
+    return s;
+  }
+  function loadVoices() {
+    if (!("speechSynthesis" in window)) return;
+    voices = window.speechSynthesis.getVoices()
+      .map(function (v) { return { v: v, s: scoreVoice(v) }; })
+      .filter(function (o) { return o.s >= 0; })
+      .sort(function (a, b) { return b.s - a.s; })
+      .map(function (o) { return o.v; });
+    renderVoicePicker();
+  }
+  if ("speechSynthesis" in window) {
+    loadVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
+  }
+  function chosenVoice() {
+    if (!voices.length) return null;
+    if (goal.voiceName) {
+      for (var i = 0; i < voices.length; i++) if (voices[i].name === goal.voiceName) return voices[i];
+    }
+    return voices[0];
+  }
+  function deviceSay(text, rate) {
+    if (!("speechSynthesis" in window)) return;
+    voiceMode = "device";
+    var u = new SpeechSynthesisUtterance(text);
+    u.rate = rate || 0.85;
+    u.pitch = 1;               // shifting pitch makes it sound MORE synthetic, not less
+    var v = chosenVoice();
+    if (v) u.voice = v;
+    window.speechSynthesis.speak(u);
+  }
+
+  /* speak(text, clipId, rate) — clipId optional */
+  function speak(text, clipId, rate) {
+    stopAudio();
+    return playClip(clipId).then(function (ok) {
+      if (ok) { voiceStatus(); return; }
+      return tryNeural(text, rate).then(function (ok2) {
+        if (!ok2) deviceSay(text, rate);
+        voiceStatus();
+      });
+    });
+  }
+
+  function voiceStatus() {
+    var el = document.getElementById("voice-status");
+    if (!el) return;
+    var n = Object.keys(clipCache).length;
+    if (voiceMode === "recorded") {
+      el.className = "status ok";
+      el.innerHTML = "🗣️ <b>Neural clips.</b> Playing pre-generated audio from <code>/audio</code> — instant, and works with no connection. " +
+        n + " clip" + (n === 1 ? "" : "s") + " loaded so far.";
+    } else if (voiceMode === "neural") {
+      el.className = "status ok";
+      el.innerHTML = "🗣️ <b>Neural voice, live.</b> Generated on demand through <code>/api/speak</code>.";
+    } else {
+      var v = chosenVoice();
+      el.className = "status";
+      el.innerHTML = "💻 <b>Device voice</b>" + (v ? " — " + v.name : "") + ". " +
+        "No clips in <code>/audio</code> and <code>/api/speak</code> is not configured. " +
+        "Run <code>npm run voices</code> for the natural voice.";
+    }
+  }
+
+  function renderVoicePicker() {
+    var sel = document.getElementById("set-voice");
+    if (!sel) return;
+    sel.innerHTML = "";
+    if (!voices.length) {
+      sel.innerHTML = '<option>No voices available</option>';
+      return;
+    }
+    voices.forEach(function (v, i) {
+      var o = document.createElement("option");
+      o.value = v.name;
+      o.textContent = v.name + (i === 0 ? "  (best available)" : "");
+      if (goal.voiceName ? goal.voiceName === v.name : i === 0) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+
+  /* ================= defaults ================= */
+  var DEFAULT_GOAL = {
+    startDate: "2026-08-20",
+    endDate: "2027-05-30",
+    dailyTarget: 240,
+    voiceName: null,
+    levels: [3, 4, 5, 6, 7, 8].map(function (g) { return { g: g, passed: false, date: null }; }),
+    sessions: [
+      { n: 1, from: "2026-08-20", to: "2026-10-15" },
+      { n: 2, from: "2026-10-16", to: "2026-12-10" },
+      { n: 3, from: "2026-12-11", to: "2027-02-11" },
+      { n: 4, from: "2027-02-12", to: "2027-04-08" },
+      { n: 5, from: "2027-04-09", to: "2027-05-30" }
+    ]
+  };
+  var goal = JSON.parse(JSON.stringify(DEFAULT_GOAL));
+  var log = {};
+  var stepsDone = [false, false, false, false, false];
+  var chunkIdx = -1;
+  var ready = false;
+
+  /* ================= dates ================= */
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function iso(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parseISO(s) { var p = s.split("-").map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+  var TODAY = iso(new Date());
+  function daysBetween(a, b) { return Math.round((parseISO(b) - parseISO(a)) / 86400000); }
+  function addDays(s, n) { var d = parseISO(s); d.setDate(d.getDate() + n); return iso(d); }
+  function isWeekend(s) { var w = parseISO(s).getDay(); return w === 0 || w === 6; }
+  function weekdaysBetween(a, b) {
+    var c = 0, cur = a, g = Math.max(0, daysBetween(a, b));
+    for (var i = 0; i <= g; i++) { if (!isWeekend(cur)) c++; cur = addDays(cur, 1); }
+    return c;
+  }
+  function pretty(s) { return parseISO(s).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }); }
+  function shortDate(s) { return parseISO(s).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+  function hm(m) { return Math.floor(m / 60) + "h " + pad(m % 60) + "m"; }
+
+  /* ================= day records ================= */
+  function day(d) {
+    if (!log[d]) log[d] = { t: new Array(16).fill(0), wt: 0, wr: 0 };
+    var r = log[d];
+    if (!r.t || r.t.length !== 16) r.t = new Array(16).fill(0);
+    /* migrate old subject strings ("m"/"r"/"o"/"") to 0/1 */
+    r.t = r.t.map(function (v) { return (v === 1 || (typeof v === "string" && v !== "")) ? 1 : 0; });
+    return r;
+  }
+  function minutesOf(d) {
+    var r = log[d]; if (!r || !r.t) return 0;
+    return r.t.filter(function (v) { return v === 1 || (typeof v === "string" && v !== ""); }).length * 15;
+  }
+
+  var saveTimer = null;
+  function save() {
+    if (!ready) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      store.set(K_LOG, JSON.stringify(log));
+      store.set(K_GOAL, JSON.stringify(goal));
+      lastSaved = new Date();
+      saveStatus();
+    }, 500);
+  }
+  function toast(m) {
+    var el = document.getElementById("toast");
+    el.textContent = m; el.classList.add("show");
+    setTimeout(function () { el.classList.remove("show"); }, 1900);
+  }
+  function saveStatus() {
+    var el = document.getElementById("save-status"); if (!el) return;
+    var when = lastSaved ? "Last saved " + lastSaved.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) + "." : "";
+    if (BACKEND === "claude") { el.className = "status ok"; el.innerHTML = "💾 <b>Saving to your Claude account.</b> " + when; }
+    else if (BACKEND === "local") { el.className = "status ok"; el.innerHTML = "💾 <b>Saving to this browser on this device.</b> It does not follow him to another computer. " + when; }
+    else { el.className = "status bad"; el.innerHTML = "⚠️ <b>Not saving.</b> This browser blocks storage. Use <b>Copy all data</b> before closing."; }
+  }
+
+  /* ================= today ================= */
+  function buildGrid() {
+    var g = document.getElementById("grid");
+    g.innerHTML = "";
+    for (var h = 0; h < 4; h++) {
+      var row = document.createElement("div"); row.className = "hour-row";
+      var lab = document.createElement("div"); lab.className = "hour-lab"; lab.textContent = (h + 1) + "h";
+      var blocks = document.createElement("div"); blocks.className = "blocks";
+      for (var i = 0; i < 4; i++) {
+        var idx = h * 4 + i;
+        var b = document.createElement("button");
+        b.className = "blk"; b.dataset.i = idx; b.dataset.on = "0";
+        b.setAttribute("aria-label", "15 minutes of math, block " + (idx + 1));
+        blocks.appendChild(b);
+      }
+      row.appendChild(lab); row.appendChild(blocks); g.appendChild(row);
+    }
+    g.addEventListener("click", function (e) {
+      var b = e.target.closest(".blk"); if (!b) return;
+      var rec = day(TODAY), i = +b.dataset.i;
+      var was = minutesOf(TODAY);
+      rec.t[i] = rec.t[i] ? 0 : 1;
+      renderToday(); save();
+      if (was < goal.dailyTarget && minutesOf(TODAY) >= goal.dailyTarget) {
+        speak("Four full hours. That is a climbing day.", "praise-full-day");
+      }
+    });
+  }
+
+  function renderToday() {
+    var rec = day(TODAY);
+    document.querySelectorAll(".blk").forEach(function (b) { b.dataset.on = rec.t[+b.dataset.i] ? "1" : "0"; });
+    var tot = minutesOf(TODAY);
+    document.getElementById("t-total").textContent = hm(tot);
+    document.getElementById("t-target").textContent = "of " + hm(goal.dailyTarget);
+    var badge = document.getElementById("t-badge");
+    if (tot >= goal.dailyTarget) { badge.textContent = "🔥 Full day"; badge.style.background = "#DFF6EC"; }
+    else if (tot >= goal.dailyTarget * 0.75) { badge.textContent = "⭐ Strong day"; badge.style.background = "#FFF0D6"; }
+    else if (tot > 0) { badge.textContent = "👍 Started"; badge.style.background = "#EEF3F8"; }
+    else { badge.textContent = "Not started"; badge.style.background = "#EEF3F8"; }
+    document.getElementById("wp-tried").textContent = rec.wt;
+    document.getElementById("wp-right").textContent = rec.wr;
+    document.getElementById("today-date").textContent = pretty(TODAY);
+    renderMast();
+  }
+
+  function currentGrade() { var g = 2; goal.levels.forEach(function (l) { if (l.passed) g = l.g; }); return g; }
+  function totalMinutes() { return Object.keys(log).reduce(function (s, d) { return s + minutesOf(d); }, 0); }
+  function streak() {
+    var c = 0, cur = TODAY;
+    if (minutesOf(TODAY) < goal.dailyTarget * 0.75) cur = addDays(TODAY, -1);
+    for (var i = 0; i < 400; i++) {
+      if (isWeekend(cur)) { cur = addDays(cur, -1); continue; }
+      if (minutesOf(cur) >= goal.dailyTarget * 0.75) { c++; cur = addDays(cur, -1); } else break;
+    }
+    return c;
+  }
+  function renderMast() {
+    document.getElementById("r-level").textContent = currentGrade();
+    document.getElementById("r-days").textContent = Math.max(0, daysBetween(TODAY, goal.endDate));
+    document.getElementById("r-hours").textContent = (totalMinutes() / 60).toFixed(1);
+    document.getElementById("r-streak").textContent = streak();
+  }
+
+  /* ================= ladder + pace ================= */
+  function dueDateFor(i) {
+    var total = daysBetween(goal.startDate, goal.endDate);
+    return shortDate(addDays(goal.startDate, Math.round(total / goal.levels.length * (i + 1))));
+  }
+  function renderLadder() {
+    var el = document.getElementById("ladder"); el.innerHTML = "";
+    var nextIdx = goal.levels.findIndex(function (l) { return !l.passed; });
+    goal.levels.forEach(function (l, i) {
+      var div = document.createElement("div");
+      div.className = "rung" + (l.passed ? " done" : "") + (i === nextIdx ? " now" : "");
+      div.innerHTML =
+        '<div class="rung-rail"><div class="rung-dot">' + (l.passed ? "✓" : l.g) + '</div></div>' +
+        '<div class="rung-plate"><div>' +
+          '<div class="rung-name">Grade ' + l.g + ' test</div>' +
+          '<div class="rung-meta">' + (l.passed ? "passed " + shortDate(l.date) : "target " + dueDateFor(i)) + '</div>' +
+        '</div><button class="rung-btn" data-lvl="' + i + '">' + (l.passed ? "Passed" : "Mark passed") + '</button></div>';
+      el.appendChild(div);
+    });
+    el.querySelectorAll(".rung-btn").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var i = +b.dataset.lvl, l = goal.levels[i];
+        l.passed = !l.passed; l.date = l.passed ? TODAY : null;
+        if (l.passed) {
+          var txt = l.g === 8 ? "You did it. Grade 8 math." : "You passed grade " + l.g + " math. Next stop, grade " + (l.g + 1) + ".";
+          speak(txt, "praise-grade-" + l.g);
+          toast("🚩 Grade " + l.g + " cleared");
+        }
+        renderLadder(); renderPace(); renderMast(); save();
+      });
+    });
+  }
+  function renderSessions() {
+    var el = document.getElementById("sessions"); el.innerHTML = "";
+    goal.sessions.forEach(function (s) {
+      var st = TODAY > s.to ? "past" : (TODAY >= s.from ? "current" : "upcoming");
+      var n = goal.levels.filter(function (l) { return l.passed && l.date >= s.from && l.date <= s.to; }).length;
+      var d = document.createElement("div"); d.className = "sess " + st;
+      d.innerHTML = '<span class="sess-n">S' + s.n + '</span><span class="sess-d">' + shortDate(s.from) + " → " + shortDate(s.to) +
+        '</span><span class="sess-tag">' + (st === "current" ? "▶ now · " : "") + n + ' passed</span>';
+      el.appendChild(d);
+    });
+  }
+  function renderPace() {
+    var done = goal.levels.filter(function (l) { return l.passed; }).length;
+    var left = goal.levels.length - done;
+    var sessLeft = goal.sessions.filter(function (s) { return TODAY <= s.to; }).length || 1;
+    var per = left / sessLeft;
+    document.getElementById("p-done").textContent = done + " / " + goal.levels.length;
+    document.getElementById("p-sess").textContent = sessLeft;
+    document.getElementById("p-need").textContent = per.toFixed(1);
+    var nextIdx = goal.levels.findIndex(function (l) { return !l.passed; });
+    document.getElementById("p-due").textContent = nextIdx === -1 ? "done" : dueDateFor(nextIdx);
+
+    var v = document.getElementById("verdict");
+    if (left === 0) { v.className = "verdict ahead"; v.innerHTML = "<b>Grade 8 reached.</b> Every level test is cleared."; return; }
+
+    var total = daysBetween(goal.startDate, goal.endDate);
+    var elapsed = Math.max(0, daysBetween(goal.startDate, TODAY));
+    var should = Math.floor(elapsed / total * goal.levels.length);
+    var gap = done - should, cls = "verdict", msg = "";
+    if (gap < 0) { cls += " behind"; msg = "<b>" + Math.abs(gap) + " level behind schedule.</b> "; }
+    else if (gap > 0) { cls += " ahead"; msg = "<b>" + gap + " level ahead of schedule.</b> "; }
+    else { msg = "<b>Right on schedule.</b> "; }
+    msg += "He needs <b>" + left + "</b> level tests in <b>" + sessLeft + "</b> session" + (sessLeft === 1 ? "" : "s") + ".";
+    if (per > 1) {
+      var dbl = Math.max(1, left - sessLeft);
+      msg += " The one-test-per-session floor only lands him at <b>grade " + (2 + done + sessLeft) + "</b> — so " + dbl +
+             " session" + (dbl > 1 ? "s need" : " needs") + " a double. Bank the extra early, while the levels are still easy.";
+    } else {
+      msg += " One per session gets him there. Any double builds a cushion for the harder levels.";
+    }
+    v.className = cls; v.innerHTML = msg;
+  }
+
+  /* ================= reader ================= */
+  var NUMWORDS = ["one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen",
+    "fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","thirty","forty","fifty","hundred","dozen","half"];
+  function esc(s) { return s.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function highlight(text) {
+    var out = esc(text), marks = [];
+    Object.keys(window.SIGNALS).forEach(function (op) {
+      window.SIGNALS[op].forEach(function (w) { marks.push({ w: w, cls: op }); });
+    });
+    NUMWORDS.forEach(function (w) { marks.push({ w: w, cls: "num" }); });
+    marks.sort(function (a, b) { return b.w.length - a.w.length; });
+    marks.forEach(function (mk) {
+      var re = new RegExp("(?<![\\w>\"])(" + mk.w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")(?![\\w<\"])", "gi");
+      out = out.replace(re, '<mark class="' + mk.cls + '">$1</mark>');
+    });
+    out = out.replace(/(?<![\w>"])(\d+(?:[.,]\d+)?)(?![\w<"])/g, '<mark class="num">$1</mark>');
+    return out;
+  }
+  function sentences(t) { return t.split(/(?<=[.!?])\s+/).map(function (s) { return s.trim(); }).filter(Boolean); }
+  function renderStage(h) { document.getElementById("wp-stage").innerHTML = h; }
+
+  function renderSteps() {
+    var el = document.getElementById("steps"); el.innerHTML = "";
+    window.STEPS.forEach(function (st, i) {
+      var b = document.createElement("button");
+      b.className = "step"; b.setAttribute("aria-pressed", stepsDone[i] ? "true" : "false");
+      b.innerHTML = '<span class="step-i">' + st.i + '</span><span><span class="step-t">' + st.t +
+        '</span><br><span class="step-s">' + st.s + '</span></span><span class="step-c">' + (stepsDone[i] ? "✓" : "") + '</span>';
+      b.addEventListener("click", function () {
+        stepsDone[i] = !stepsDone[i];
+        if (stepsDone[i]) speak(st.say, st.id);
+        renderSteps();
+        if (stepsDone.every(Boolean)) toast("All five moves done");
+      });
+      el.appendChild(b);
+    });
+  }
+
+  function renderBank() {
+    var el = document.getElementById("wordbank"); el.innerHTML = "";
+    window.BANK.forEach(function (g) {
+      var d = document.createElement("div"); d.className = "wb-group";
+      d.innerHTML = '<div class="wb-head" style="background:' + g.color + '">' + g.label + '</div>' +
+        '<div class="wb-body"><div class="wb-mean">' + g.mean + '</div><div class="chips">' +
+        window.SIGNALS[g.key].map(function (w) { return '<button class="chip" data-w="' + w + '">' + w + '</button>'; }).join("") +
+        '</div></div>';
+      el.appendChild(d);
+    });
+    el.addEventListener("click", function (e) {
+      var c = e.target.closest(".chip"); if (!c) return;
+      c.classList.add("playing");
+      setTimeout(function () { c.classList.remove("playing"); }, 1200);
+      speak(c.dataset.w, window.wordId(c.dataset.w));
+    });
+  }
+
+  /* ================= guide ================= */
+  function renderGuide() {
+    var body = document.getElementById("log-body"); body.innerHTML = "";
+    var cur = TODAY, shown = 0, sumT = 0, sumWT = 0, sumWR = 0;
+    for (var i = 0; i < 40 && shown < 14; i++) {
+      if (!isWeekend(cur)) {
+        var t = minutesOf(cur), rec = log[cur] || { wt: 0, wr: 0 };
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>" + shortDate(cur) + '</td><td class="n">' + hm(t) + '</td><td class="n">' + rec.wr + "/" + rec.wt + "</td>";
+        if (t >= goal.dailyTarget) tr.style.background = "#DFF6EC";
+        body.appendChild(tr);
+        sumT += t; sumWT += rec.wt; sumWR += rec.wr; shown++;
+      }
+      cur = addDays(cur, -1);
+    }
+    var wdLeft = weekdaysBetween(TODAY, goal.endDate);
+    var acc = sumWT ? Math.round(sumWR / sumWT * 100) : 0;
+    document.getElementById("rollup").innerHTML =
+      "Last 14 school days: <b>" + hm(sumT) + "</b> of math. Word problems <b>" + sumWR + "/" + sumWT + "</b> (" + acc + "% right). " +
+      "Ahead of him: <b>" + wdLeft + " school days</b>, about <b>" + (wdLeft * goal.dailyTarget / 60).toFixed(0) + " hours</b> at the current target.";
+  }
+  function renderSettings() {
+    renderVoicePicker();
+    document.getElementById("set-daily").value = goal.dailyTarget;
+    document.getElementById("set-end").value = goal.endDate;
+    var wrap = document.getElementById("sess-edit"); wrap.innerHTML = "";
+    goal.sessions.forEach(function (s, i) {
+      var row = document.createElement("div"); row.className = "sess-edit";
+      row.innerHTML = '<span class="sess-n">S' + s.n + '</span>' +
+        '<input type="date" data-s="' + i + '" data-f="from" value="' + s.from + '">' +
+        '<input type="date" data-s="' + i + '" data-f="to" value="' + s.to + '">';
+      wrap.appendChild(row);
+    });
+  }
+
+  /* ================= wiring ================= */
+  function wire() {
+    document.querySelectorAll(".tab").forEach(function (t) {
+      t.addEventListener("click", function () {
+        document.querySelectorAll(".tab").forEach(function (x) { x.setAttribute("aria-selected", "false"); });
+        t.setAttribute("aria-selected", "true");
+        ["today", "climb", "words", "guide"].forEach(function (p) {
+          document.getElementById("panel-" + p).classList.toggle("hidden", p !== t.dataset.tab);
+        });
+        if (t.dataset.tab === "guide") { renderGuide(); renderSettings(); saveStatus(); voiceStatus(); }
+        if (t.dataset.tab === "climb") { renderLadder(); renderPace(); renderSessions(); }
+      });
+    });
+
+    document.body.addEventListener("click", function (e) {
+      var s = e.target.closest("[data-clip]"); if (!s) return;
+      var line = window.VOICE_LINES.find(function (l) { return l.id === s.dataset.clip; });
+      s.classList.add("playing"); setTimeout(function () { s.classList.remove("playing"); }, 1500);
+      speak(line ? line.text : "", s.dataset.clip);
+    });
+
+    document.querySelectorAll("[data-wp]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var rec = day(TODAY), f = b.dataset.wp === "tried" ? "wt" : "wr";
+        rec[f] = Math.max(0, rec[f] + (+b.dataset.d));
+        if (rec.wr > rec.wt) rec.wt = rec.wr;
+        renderToday(); save();
+      });
+    });
+
+    var inp = document.getElementById("wp-input");
+    function need() {
+      var t = inp.value.trim();
+      if (!t) { renderStage("Type a problem in the box first."); return null; }
+      return t;
+    }
+    document.getElementById("wp-read").addEventListener("click", function () {
+      var t = need(); if (!t) return; chunkIdx = -1; renderStage(highlight(t)); speak(t, null, 0.9);
+    });
+    document.getElementById("wp-slow").addEventListener("click", function () {
+      var t = need(); if (!t) return; renderStage(highlight(t)); speak(t, null, 0.65);
+    });
+    document.getElementById("wp-chunk").addEventListener("click", function () {
+      var t = need(); if (!t) return;
+      var parts = sentences(t);
+      chunkIdx = (chunkIdx + 1) % parts.length;
+      renderStage('<div style="font-family:var(--mono);font-size:11px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;">PIECE ' +
+        (chunkIdx + 1) + " OF " + parts.length + "</div>" + highlight(parts[chunkIdx]));
+      speak(parts[chunkIdx], null, 0.8);
+    });
+    document.getElementById("test-voice").addEventListener("click", function () {
+      var vs = document.getElementById("set-voice");
+      if (vs && vs.value) goal.voiceName = vs.value;
+      stopAudio();
+      deviceSay("Find the colored word. That word tells you what to do.", 0.85);
+    });
+    document.getElementById("steps-reset").addEventListener("click", function () {
+      stepsDone = [false, false, false, false, false]; renderSteps();
+    });
+
+    document.getElementById("save-settings").addEventListener("click", function () {
+      goal.dailyTarget = Math.max(15, +document.getElementById("set-daily").value || 240);
+      goal.endDate = document.getElementById("set-end").value || goal.endDate;
+      var vs = document.getElementById("set-voice");
+      if (vs && vs.value) goal.voiceName = vs.value;
+      document.querySelectorAll("#sess-edit input").forEach(function (i) {
+        goal.sessions[+i.dataset.s][i.dataset.f] = i.value;
+      });
+      renderToday(); renderGuide(); renderPace(); toast("Settings saved"); save();
+    });
+
+    document.getElementById("export").addEventListener("click", function () {
+      var rows = ["date,math_minutes,wp_tried,wp_right"];
+      Object.keys(log).sort().forEach(function (d) {
+        var r = log[d]; rows.push([d, minutesOf(d), r.wt, r.wr].join(","));
+      });
+      rows.push("", "level,passed,date");
+      goal.levels.forEach(function (l) { rows.push(["grade_" + l.g, l.passed, l.date || ""].join(",")); });
+      var txt = rows.join("\n");
+      navigator.clipboard.writeText(txt).then(function () { toast("Copied to clipboard"); })
+        .catch(function () { renderStage("<pre style='font-size:11px;white-space:pre-wrap'>" + esc(txt) + "</pre>"); toast("Clipboard blocked — shown on Words tab"); });
+    });
+
+    document.getElementById("wipe").addEventListener("click", function () {
+      if (!window.confirm("Erase all logged days and level results?")) return;
+      log = {}; goal = JSON.parse(JSON.stringify(DEFAULT_GOAL));
+      renderToday(); renderLadder(); renderPace(); renderSessions(); renderGuide(); renderSettings();
+      toast("Erased"); save();
+    });
+  }
+
+  /* ================= boot ================= */
+  function boot() {
+    buildGrid(); renderSteps(); renderBank(); wire();
+    Promise.all([store.get(K_LOG), store.get(K_GOAL)]).then(function (res) {
+      try { if (res[0] && res[0].value) log = JSON.parse(res[0].value) || {}; } catch (e) { log = {}; }
+      try {
+        if (res[1] && res[1].value) {
+          goal = Object.assign(JSON.parse(JSON.stringify(DEFAULT_GOAL)), JSON.parse(res[1].value));
+        }
+      } catch (e) {}
+      ready = true;
+      renderToday(); renderLadder(); renderPace(); renderSessions(); renderGuide(); renderSettings();
+      saveStatus(); voiceStatus();
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
