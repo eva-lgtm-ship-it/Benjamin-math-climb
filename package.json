@@ -1,0 +1,12 @@
+{
+  "name": "benjamin-math-climb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily math-time tracker and grade-level climb for one 2nd grader heading to 8th grade math.",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve .",
+    "voices": "node scripts/generate-voices.cjs",
+    "voices:force": "node scripts/generate-voices.cjs --force"
+  }
+}
